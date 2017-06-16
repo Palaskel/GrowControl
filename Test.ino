@@ -1,8 +1,11 @@
+//sketch adjusted based on GrowGreen sketch by AvidLerner
+// GrowGreen/GrowGreen.ino 
+
 #include <Wire.h>
 #include <EEPROMVar.h>
 #include <Adafruit_RGBLCDShield.h>
 #include <utility/Adafruit_MCP23017.h>
-//#include <dht11.h>  
+#include <dht11.h>  
 // setup DHT for use
 //dht11 DHT;
 // DHT data  pin
@@ -22,14 +25,14 @@ Adafruit_RGBLCDShield lcd = Adafruit_RGBLCDShield();
 int bklDelay    = 100000;    // ms for the backlight to idle before turning off
 unsigned long bklTime = 0;  // counter since backlight turned on
 // create the menu counter
-int menuCount   = 1;
-int menuSelect = 0;
+//int menuCount   = 1;
+//int menuSelect = 0;
 
 //create the plus and minus navigation delay counter with its initial maximum of 250.
-byte btnMaxDelay = 200;
-byte btnMinDelay = 25;
-byte btnMaxIteration = 5;
-byte btnCurrIteration;
+//byte btnMaxDelay = 200;
+//byte btnMinDelay = 25;
+//byte btnMaxIteration = 5;
+//byte btnCurrIteration;
 // setup[ ds1307  Real Time Clock using i2c address direct
 #define DS1307_I2C_ADDRESS 0x68
 // backlight on/off
@@ -38,14 +41,13 @@ byte btnCurrIteration;
 // lcd screen variable
 int LCD_R=16;  // lcd rows
 int LCD_C=2;  // lcd columns
-// establish temperature humidity pin on A0
 //create manual override variables
-boolean override = false;
-byte overmenu = 0;
-int overpercent = 0;
+//boolean override = false;
+//byte overmenu = 0;
+//int overpercent = 0;
 // button read variables for lcd shield
-uint8_t i=0;
-uint8_t buttons =0;
+//uint8_t i=0;
+//uint8_t buttons =0;
 //------------------- system variables-----------------------//
 int minCounter = 0;         // counter that resets at midnight.
 int oldMinCounter = 0;      // counter that resets at midnight.
@@ -53,16 +55,16 @@ int oneLed = 9;             // pin for channel 1
 int twoLed = 10;            // pin for channel 2
 int threeLed = 11;          // pin for channel 3
 int fourLed = 5;            // pin for channel 4
-int fiveLed = 6;            // pin for channel 5
-int sixLed = 7;             // pin for channel 6
+//int fiveLed = 6;            // pin for channel 5
+//int sixLed = 7;             // pin for channel 6
 int oneVal = 0;             // current value for channel 1
 int twoVal = 0;             // current value for channel 2
 int threeVal = 0;           // current value for channel 3
 int fourVal = 0;            // current value for channel 4
-int fiveVal = 0;            // current value for channel 5
-int sixVal = 0;             // current value for channel 6
+//int fiveVal = 0;            // current value for channel 5
+//int sixVal = 0;             // current value for channel 6
 // dht11 data variables for printing temp in farhenheit or celcius
-int dhtFTemp=0;
+//int dhtFTemp=0;
 int dhtCTemp=0;
 int dhtHumidity=0;
 double dhtDTemp=0;
@@ -88,15 +90,15 @@ EEPROMVar<int> fourPhotoPeriod = 720;
 EEPROMVar<int> fourMax = 100;          
 EEPROMVar<int> fourFadeDuration = 60; 
 
-EEPROMVar<int> fiveStartMins = 1050;
-EEPROMVar<int> fivePhotoPeriod = 720;  
-EEPROMVar<int> fiveMax = 100;          
-EEPROMVar<int> fiveFadeDuration = 60; 
+//EEPROMVar<int> fiveStartMins = 1050;
+//EEPROMVar<int> fivePhotoPeriod = 720;  
+//EEPROMVar<int> fiveMax = 100;          
+//EEPROMVar<int> fiveFadeDuration = 60; 
 
-EEPROMVar<int> sixStartMins = 1050;
-EEPROMVar<int> sixPhotoPeriod = 720;  
-EEPROMVar<int> sixMax = 100;          
-EEPROMVar<int> sixFadeDuration = 60; 
+//EEPROMVar<int> sixStartMins = 1050;
+//EEPROMVar<int> sixPhotoPeriod = 720;  
+//EEPROMVar<int> sixMax = 100;          
+//EEPROMVar<int> sixFadeDuration = 60; 
 // variables to invert the output PWM signal,
 // for use with drivers that consider 0 to be "on"
 // i.e. buckpucks. If you need to provide an inverted 
@@ -119,21 +121,21 @@ void PrintBegin()
   lcd.setBacklight(ON);
    
 }
-void printTempMenu()
-  {
-  lcd.setCursor(12,0);
-  lcd.print(dhtFTemp);
-  lcd.setCursor(15,0);
-  lcd.print((char)223);
-  //lcd.setCursor(13,0);
-  //lcd.print(dhtHumidity);
-  //lcd.setCursor(15,0);
-  //lcd.print("%");
-  }
+//void printTempMenu()
+//  {
+//  lcd.setCursor(12,0);
+//  lcd.print(dhtCTemp);
+//  lcd.setCursor(15,0);
+//  lcd.print((char)223);
+//  //lcd.setCursor(13,0);
+//  //lcd.print(dhtHumidity);
+//  //lcd.setCursor(15,0);
+//  //lcd.print("%");
+//  }
   void printTempHumidityMenu()
   {
   lcd.setCursor(9,0);
-  lcd.print(dhtFTemp);
+  lcd.print(dhtCTemp);
   lcd.setCursor(12,0);
   lcd.print((char)223);
   lcd.setCursor(13,0);
@@ -157,30 +159,30 @@ void cleanScreen()
   lcd.print("                ");
 }
 // readButtons from lcd shield
-void ReadButtons()
-   {
-    uint8_t buttons = lcd.readButtons();
-
-  if (buttons) {
-    //lcd.clear();
-    //lcd.setCursor(0,0);
-    if (buttons & BUTTON_UP) {
-     
-    }
-    if (buttons & BUTTON_DOWN) {
-    
-    }
-    if (buttons & BUTTON_LEFT) {
-     
-    }
-    if (buttons & BUTTON_RIGHT) {
-     
-    }
-    if (buttons & BUTTON_SELECT) {
-      
-    }
-  }
-}
+//void ReadButtons()
+//   {
+//    uint8_t buttons = lcd.readButtons();
+//
+//  if (buttons) {
+//    //lcd.clear();
+//    //lcd.setCursor(0,0);
+//    if (buttons & BUTTON_UP) {
+//     
+//    }
+//    if (buttons & BUTTON_DOWN) {
+//    
+//    }
+//    if (buttons & BUTTON_LEFT) {
+//     
+//    }
+//    if (buttons & BUTTON_RIGHT) {
+//     
+//    }
+//    if (buttons & BUTTON_SELECT) {
+//      
+//    }
+//  }
+//}
 // end ReadButtons
 /****** RTC Functions ******/
 /***************************/
@@ -284,23 +286,23 @@ int   setLed(int mins,         // current time in minutes
 /***************************/
 
 //button hold function
-int btnCurrDelay(byte curr)
-{
-  if(curr==btnMaxIteration)
-  {
-    btnCurrIteration = btnMaxIteration;
-    return btnMaxDelay;
-  }
-  else if(btnCurrIteration ==0)
-  {
-    return btnMinDelay;
-  }
-  else
-  {
-    btnCurrIteration--;
-    return btnMaxDelay;
-  }
-}
+//int btnCurrDelay(byte curr)
+//{
+//  if(curr==btnMaxIteration)
+//  {
+//    btnCurrIteration = btnMaxIteration;
+//    return btnMaxDelay;
+//  }
+//  else if(btnCurrIteration ==0)
+//  {
+//    return btnMinDelay;
+//  }
+//  else
+//  {
+//    btnCurrIteration--;
+//    return btnMaxDelay;
+//  }
+//}
 
 // format a number of minutes into a readable time (24 hr format)
 void printMins(int mins,       //time in minutes to print
@@ -346,8 +348,8 @@ void ovrSetAll(int pct){
     analogWrite(twoLed,map(pct,0,100,0,255));
     analogWrite(threeLed,map(pct,0,100,0,255));
     analogWrite(fourLed,map(pct,0,100,0,255));
-    analogWrite(fiveLed,map(pct,0,100,0,255));
-    analogWrite(sixLed,map(pct,0,100,0,255));
+//   analogWrite(fiveLed,map(pct,0,100,0,255));
+//   analogWrite(sixLed,map(pct,0,100,0,255));
 }
 // setup ddrc and portc for temp/humidity sensor
 // DHT11_GetData Use with Mega 2560 simple and direct
@@ -432,23 +434,23 @@ void GetDHTData()
   dhtHumidity=(int) dht11_dat[0];
   //double dhtDHumidity= double dht11_dat[0];
   } // end read data DHT11
-//temperture menu
+
 // showChannelValues()  print channel values to lcd
-void showChannelValues() { // display the current intensity for each led channel
-byte second, minute, hour, dayOfWeek, dayOfMonth, month, year;
-char buffer[17];
-lcd.noCursor();
-lcd.noBlink();
-getDate(&second, &minute, &hour, &dayOfWeek, &dayOfMonth, &month, &year);
-lcd.noCursor();
-lcd.noBlink();
-lcd.setCursor(0,0);
-sprintf(buffer, "%3d %3d %3d", oneVal, twoVal, threeVal);
-lcd.print(buffer);
-lcd.setCursor(0,1);
-sprintf(buffer, "%3d %3d %3d%2d:%02d", fourVal, fiveVal, sixVal, hour, minute);
-lcd.print(buffer);
-}
+//void showChannelValues() { // display the current intensity for each led channel
+//byte second, minute, hour, dayOfWeek, dayOfMonth, month, year;
+//char buffer[17];
+//lcd.noCursor();
+//lcd.noBlink();
+//getDate(&second, &minute, &hour, &dayOfWeek, &dayOfMonth, &month, &year);
+//lcd.noCursor();
+//lcd.noBlink();
+//lcd.setCursor(0,0);
+//sprintf(buffer, "%3d %3d %3d", oneVal, twoVal, threeVal);
+//lcd.print(buffer);
+//lcd.setCursor(0,1);
+//sprintf(buffer, "%3d %3d %3d%2d:%02d", fourVal, fiveVal, sixVal, hour, minute);
+//lcd.print(buffer);
+//}
 // end showChannelValues
 
 // void setup
@@ -462,9 +464,7 @@ PrintBegin();
 // set serial printer
 SPrintBegin();
 //splash screen
-lcd.print("GrowGreen CoB");
-lcd.setCursor(0,1);
-lcd.print("LED Controller");
+lcd.print("GrowControl");
 delay(5000);
 lcd.clear();
 //lcd.setBacklight(OFF);
@@ -496,11 +496,11 @@ void loop(){
   if(fourFadeDuration > fourPhotoPeriod/2 && fourPhotoPeriod > 0){fourFadeDuration = fourPhotoPeriod/2;}
   if(fourFadeDuration<1){fourFadeDuration=1;}
  
- if(fiveFadeDuration > fivePhotoPeriod/2 && fivePhotoPeriod >0){fiveFadeDuration = fivePhotoPeriod/2;}
-  if(fiveFadeDuration<1){fiveFadeDuration=1;}
+  //if(fiveFadeDuration > fivePhotoPeriod/2 && fivePhotoPeriod >0){fiveFadeDuration = fivePhotoPeriod/2;}
+  //if(fiveFadeDuration<1){fiveFadeDuration=1;}
   
-  if(sixFadeDuration > sixPhotoPeriod/2 && sixPhotoPeriod > 0){sixFadeDuration = sixPhotoPeriod/2;}
-  if(sixFadeDuration<1){sixFadeDuration=1;} 
+  //if(sixFadeDuration > sixPhotoPeriod/2 && sixPhotoPeriod > 0){sixFadeDuration = sixPhotoPeriod/2;}
+  //if(sixFadeDuration<1){sixFadeDuration=1;} 
   
   //check & set any time functions
   
@@ -511,8 +511,8 @@ void loop(){
   twoVal = setLed(minCounter, twoLed, twoStartMins, twoPhotoPeriod, twoFadeDuration, twoMax, twoInverted);
   threeVal = setLed(minCounter, threeLed, threeStartMins, threePhotoPeriod, threeFadeDuration, threeMax, threeInverted);
   fourVal = setLed(minCounter, fourLed, fourStartMins, fourPhotoPeriod, fourFadeDuration, fourMax, fourInverted);
-  fiveVal = setLed(minCounter, fiveLed, fiveStartMins, fivePhotoPeriod, fiveFadeDuration, fiveMax, fiveInverted);
-  sixVal = setLed(minCounter, sixLed, sixStartMins, sixPhotoPeriod, sixFadeDuration, sixMax, sixInverted);
+  //fiveVal = setLed(minCounter, fiveLed, fiveStartMins, fivePhotoPeriod, fiveFadeDuration, fiveMax, fiveInverted);
+  //sixVal = setLed(minCounter, sixLed, sixStartMins, sixPhotoPeriod, sixFadeDuration, sixMax, sixInverted);
   
   }
   else{
@@ -521,88 +521,88 @@ void loop(){
   
   
   //turn the backlight off and reset the menu if the idle time has elapsed
-  if(bklTime + bklDelay < millis() && bklTime > 0 ){
-    
-    menuCount = 1;
-    lcd.clear();
-    bklTime = 0;
-  }
+  //if(bklTime + bklDelay < millis() && bklTime > 0 ){
+  //  
+  //  menuCount = 1;
+  //  lcd.clear();
+  //  bklTime = 0;
+  //}
 
   //iterate through the menus
-  uint8_t buttons = lcd.readButtons();
-  if(buttons & BUTTON_SELECT){
-    lcd.setBacklight(ON);
-    bklTime = millis();
-    if(menuCount < 28){
-      menuCount++;
-    }else {
-      menuCount = 1;
+  //uint8_t buttons = lcd.readButtons();
+  //if(buttons & BUTTON_SELECT){
+  //  lcd.setBacklight(ON);
+  //  bklTime = millis();
+  //  if(menuCount < 28){
+  //     menuCount++;
+  //  }else {
+  //    menuCount = 1;
     }
-  lcd.clear();
-  } // end if
+  //lcd.clear();
+  //} // end if
 //main screen turn on!!! 
   
-  if(menuCount == 1){
-    if (minCounter > oldMinCounter){
-      lcd.clear();
-    }
-    showChannelValues();
+  //if(menuCount == 1){
+   // if (minCounter > oldMinCounter){
+//      lcd.clear();
+//    }
+//    showChannelValues();
     //debugging function to use the select button to advance the timer by 1 minute
     //if(select.uniquePress()){setDate(second, minute+1, hour, dayOfWeek, dayOfMonth, month, year);}
-  }
+//  }
   
   //Manual Override Menu
-  if(menuCount == 2){
+//  if(menuCount == 2){
    
-    lcd.setCursor(0,0);
-    lcd.print("Manual Overrides");
-    lcd.setCursor(0,1);
-    lcd.print("All: ");
-   
-    if(buttons & BUTTON_RIGHT){
-     
-      if(menuSelect < 3 ){
-        menuSelect++;
-        
-      }
-      else{menuSelect = 0;}
-      bklTime = millis();
-    }
-    
-    if(menuSelect == 0){
-      lcd.print("Timer");
-      override = false;}
-    if(menuSelect == 1  ){
-      lcd.print("ON   ");
-      overpercent = 100;
-      override = true;}
-    if(menuSelect == 2){
-      lcd.print("OFF  ");
-      overpercent = 0;
-      override = true;}    
-    if(menuSelect == 3  ){
-      override = true;
-      lcd.print(overpercent,DEC);
-      lcd.print("%  ");
-      if((buttons & BUTTON_RIGHT) && overpercent <100)
-        {
-          overpercent++;
-          delay(btnCurrDelay(btnCurrIteration-1));
-          bklTime = millis();
-        }
-        
-        if((buttons & BUTTON_LEFT) && overpercent > 0)
-        {
-          overpercent--;
-          delay(btnCurrDelay(btnCurrIteration-1));
-          bklTime = millis();
-        }
-      }
-  } // menucount = 2
+//   lcd.setCursor(0,0);
+//   lcd.print("Manual Overrides");
+//    lcd.setCursor(0,1);
+//    lcd.print("All: ");
+//   
+//    if(buttons & BUTTON_RIGHT){
+//     
+//      if(menuSelect < 3 ){
+//        menuSelect++;
+//        
+//      }
+//      else{menuSelect = 0;}
+//      bklTime = millis();
+//    }
+//    
+//    if(menuSelect == 0){
+//      lcd.print("Timer");
+//      override = false;}
+//    if(menuSelect == 1  ){
+//      lcd.print("ON   ");
+//      overpercent = 100;
+//      override = true;}
+//    if(menuSelect == 2){
+//      lcd.print("OFF  ");
+//      overpercent = 0;
+//      override = true;}    
+//    if(menuSelect == 3  ){
+//      override = true;
+//      lcd.print(overpercent,DEC);
+//      lcd.print("%  ");
+//      if((buttons & BUTTON_RIGHT) && overpercent <100)
+//        {
+//          overpercent++;
+//          delay(btnCurrDelay(btnCurrIteration-1));
+//          bklTime = millis();
+//        }
+//        
+//        if((buttons & BUTTON_LEFT) && overpercent > 0)
+//        {
+//          overpercent--;
+//          delay(btnCurrDelay(btnCurrIteration-1));
+//          bklTime = millis();
+//        }
+//      }
+//  } // menucount = 2
   
 
 //set start time for channel one
-  if(menuCount == 3){
+/*  if(menuCount == 3){
     lcd.setCursor(0,0);
     lcd.print("Channel 1 Start");
     lcd.setCursor(0,1);
@@ -1123,6 +1123,7 @@ void loop(){
       bklTime = millis();
     }
   setDate(second, minute, hour, dayOfWeek, dayOfMonth, month, year);
-  } // end menu count 28
+  } */ // end menu count 28
 }  // end loop
 // end of sketch
+
