@@ -34,18 +34,10 @@ int LCD_C=2;  // lcd columns
 //------------------- system variables-----------------------//
 int minCounter = 0;         // counter that resets at midnight.
 int oldMinCounter = 0;      // counter that resets at midnight.
-int oneLed = 9;             // pin for channel 1
-int twoLed = 10;            // pin for channel 2
-int threeLed = 11;          // pin for channel 3
-int fourLed = 5;            // pin for channel 4
-//int fiveLed = 6;            // pin for channel 5
-//int sixLed = 7;             // pin for channel 6
-int oneVal = 0;             // current value for channel 1
-int twoVal = 0;             // current value for channel 2
-int threeVal = 0;           // current value for channel 3
-int fourVal = 0;            // current value for channel 4
-//int fiveVal = 0;            // current value for channel 5
-//int sixVal = 0;             // current value for channel 6
+int oneDimm = 9;             // pin for channel 1
+int twoDimm = 10;            // pin for channel 2
+int oneDimmVal = 0;             // current value for channel 1
+int twoDimmVal = 0;             // current value for channel 2
 // dht11 data variables for printing temp in farhenheit or celcius
 //int dhtFTemp=0;
 int dhtCTemp=0;
@@ -63,35 +55,12 @@ EEPROMVar<int> twoPhotoPeriod = 720; //
 EEPROMVar<int> twoMax = 100;
 EEPROMVar<int> twoFadeDuration = 60;
 
-EEPROMVar<int> threeStartMins = 360;
-EEPROMVar<int> threePhotoPeriod = 720;
-EEPROMVar<int> threeMax = 100;
-EEPROMVar<int> threeFadeDuration = 60;
-                            
-EEPROMVar<int> fourStartMins = 1050;  // 6:pm
-EEPROMVar<int> fourPhotoPeriod = 720;  
-EEPROMVar<int> fourMax = 100;          
-EEPROMVar<int> fourFadeDuration = 60; 
-
-//EEPROMVar<int> fiveStartMins = 1050;
-//EEPROMVar<int> fivePhotoPeriod = 720;  
-//EEPROMVar<int> fiveMax = 100;          
-//EEPROMVar<int> fiveFadeDuration = 60; 
-
-//EEPROMVar<int> sixStartMins = 1050;
-//EEPROMVar<int> sixPhotoPeriod = 720;  
-//EEPROMVar<int> sixMax = 100;          
-//EEPROMVar<int> sixFadeDuration = 60; 
 // variables to invert the output PWM signal,
 // for use with drivers that consider 0 to be "on"
 // i.e. buckpucks. If you need to provide an inverted 
 // signal on any channel, set the appropriate variable to true.
 boolean oneInverted = false;
 boolean twoInverted = false;
-boolean threeInverted = false;
-boolean fourInverted = false; 
-boolean fiveInverted = false;
-boolean sixInverted = false; 
 
 int h = 0;  // hours
 int m = 0;  // minutes
@@ -188,55 +157,6 @@ void getDate(byte *second,
   *year       = bcdToDec(Wire.read());
 }
 
-/****** LED Functions ******/
-//function to set LED brightness according to time of day
-//function has three equal phases - ramp up, hold, and ramp down
-
-int   setLed(int mins,         // current time in minutes
-            int ledPin,        // pin for this channel of LEDs
-            int start,         // start time for this channel of LEDs
-            int period,        // photoperiod for this channel of LEDs
-            int fade,          // fade duration for this channel of LEDs
-            int ledMax,        // max value for this channel
-            boolean inverted   // true if the channel is inverted
-            )  {
-  int val = 0;
-      
-      //fade up
-      if (mins > start || mins <= start + fade)  {
-        val = map(mins - start, 0, fade, 0, ledMax);
-      }
-      //fade down
-      if (mins > start + period - fade && mins <= start + period)  {
-        val = map(mins - (start + period - fade), 0, fade, ledMax, 0);
-      }
-      //off or post-midnight run.
-      if (mins <= start || mins > start + period)  {
-        if((start+period)%1440 < start && (start + period)%1440 > mins )
-          {
-            val=map((start+period-mins)%1440,0,fade,0,ledMax);
-          }
-        else  
-        val = 0; 
-      }
-    
-    
-    if (val > ledMax)  {val = ledMax;} 
-    if (val < 0) {val = 0; } 
-    
-  if (inverted) {analogWrite(ledPin, map(val, 0, 100, 255, 0));}
-  else {analogWrite(ledPin, map(val, 0, 100, 0, 255));}
-  if(override){val=overpercent;}
-  return val;
-}
-
-void ovrSetAll(int pct){
-    analogWrite(oneLed,map(pct,0,100,0,255));
-    analogWrite(twoLed,map(pct,0,100,0,255));
-    analogWrite(threeLed,map(pct,0,100,0,255));
-    analogWrite(fourLed,map(pct,0,100,0,255));
-}
-
 void DHTSetup(){
    DDRC |= _BV(DHT11_PIN);
   PORTC |= _BV(DHT11_PIN);
@@ -305,6 +225,46 @@ void GetDHTData() // read data for input from dht11 temp/humidity sensor
   //double dhtDHumidity= double dht11_dat[0];
   } // end read data DHT11
 
+/****** LED Functions ******/
+//function to set LED brightness according to time of day
+//function has three equal phases - ramp up, hold, and ramp down
+
+int   setLed(int mins,         // current time in minutes
+            int ledPin,        // pin for this channel of LEDs
+            int start,         // start time for this channel of LEDs
+            int period,        // photoperiod for this channel of LEDs
+            int fade,          // fade duration for this channel of LEDs
+            int ledMax,        // max value for this channel
+            boolean inverted   // true if the channel is inverted
+            )  {
+  int val = 0;
+      
+      //fade up
+      if (mins > start || mins <= start + fade)  {
+        val = map(mins - start, 0, fade, 0, ledMax);
+      }
+      //fade down
+      if (mins > start + period - fade && mins <= start + period)  {
+        val = map(mins - (start + period - fade), 0, fade, ledMax, 0);
+      }
+      //off or post-midnight run.
+      if (mins <= start || mins > start + period)  {
+        if((start+period)%1440 < start && (start + period)%1440 > mins )
+          {
+            val=map((start+period-mins)%1440,0,fade,0,ledMax);
+          }
+        else  
+        val = 0; 
+      }
+    
+    
+    if (val > ledMax)  {val = ledMax;} 
+    if (val < 0) {val = 0; } 
+    
+  if (inverted) {analogWrite(ledPin, map(val, 0, 100, 255, 0));}
+  else {analogWrite(ledPin, map(val, 0, 100, 0, 255));}
+  return val;
+}
 
 // void setup
 void setup()
