@@ -14,6 +14,8 @@ void setup()  {
      Serial.println("Unable to sync with the RTC");
   else
      Serial.println("RTC has set the system time");      
+  pinMode(oneRelay, OUTPUT);
+  pinMode(twoRelay, OUTPUT);
   // create the alarms, to trigger at specific times
   Alarm.alarmRepeat(9,00,0, oneRelayON);  // 8:30am every day
   Alarm.alarmRepeat(21,00,0, oneRelayOFF); // 5:45pm every day
