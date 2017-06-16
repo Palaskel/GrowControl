@@ -179,7 +179,7 @@ void getDate(byte *second,
 //function to set Dimm brightness according to time of day
 //function has three equal phases - ramp up, hold, and ramp down
 
-int   setDimm(int mins,         // current time in minutes
+int setDimm(int mins,         // current time in minutes
             int DimmPin,        // pin for this channel of Dimms
             int start,         // start time for this channel of Dimms
             int period,        // photoperiod for this channel of Dimms
