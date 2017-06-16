@@ -6,48 +6,31 @@
 #include <Adafruit_RGBLCDShield.h>
 #include <utility/Adafruit_MCP23017.h>
 #include <dht11.h>  
+
 // setup DHT for use
 //dht11 DHT;
 // DHT data  pin
 #define DHT11_PIN 0 // ADC0 for Uno
 int DHT11Temp = 0;
 int DHT11Hum = 0;
-/* completed 6/23/16 executes the menu system, display date, time, 
-temperature and humidity and runs throuhg screens and loops correctly.
-define some values used by the panel and buttons
- readButton for each function */
- // The shield uses the I2C SCL and SDA pins. On classic Arduinos
+
+// The shield uses the I2C SCL and SDA pins. On classic Arduinos
 // this is Analog 4 and 5 so you can't use those for analogRead() anymore
 // However, you can connect other I2C sensors to the I2C bus and share
 // the I2C bus.
 Adafruit_RGBLCDShield lcd = Adafruit_RGBLCDShield();
-// set up backlight
-int bklDelay    = 100000;    // ms for the backlight to idle before turning off
-unsigned long bklTime = 0;  // counter since backlight turned on
-// create the menu counter
-//int menuCount   = 1;
-//int menuSelect = 0;
 
-//create the plus and minus navigation delay counter with its initial maximum of 250.
-//byte btnMaxDelay = 200;
-//byte btnMinDelay = 25;
-//byte btnMaxIteration = 5;
-//byte btnCurrIteration;
 // setup[ ds1307  Real Time Clock using i2c address direct
 #define DS1307_I2C_ADDRESS 0x68
+
 // backlight on/off
 #define ON 0x1
 #define OFF 0x0
+
 // lcd screen variable
 int LCD_R=16;  // lcd rows
 int LCD_C=2;  // lcd columns
-//create manual override variables
-//boolean override = false;
-//byte overmenu = 0;
-//int overpercent = 0;
-// button read variables for lcd shield
-//uint8_t i=0;
-//uint8_t buttons =0;
+
 //------------------- system variables-----------------------//
 int minCounter = 0;         // counter that resets at midnight.
 int oldMinCounter = 0;      // counter that resets at midnight.
@@ -73,8 +56,8 @@ double dhtDHumidity=0;
 EEPROMVar<int> oneStartMins = 360;      // minute to start this channel.
 EEPROMVar<int> onePhotoPeriod = 720;   // photoperiod in minutes for this channel.
 EEPROMVar<int> oneMax = 100;           // max intensity for this channel, as a percentage
-EEPROMVar<int> oneFadeDuration = 60;   // duration of the fade on and off for sunrise and sunset for
-                                       //    this channel.
+EEPROMVar<int> oneFadeDuration = 60;   // duration of the fade on and off for sunrise and sunset for this channel
+
 EEPROMVar<int> twoStartMins = 360;  //  6:am
 EEPROMVar<int> twoPhotoPeriod = 720; //
 EEPROMVar<int> twoMax = 100;
@@ -110,10 +93,10 @@ boolean fourInverted = false;
 boolean fiveInverted = false;
 boolean sixInverted = false; 
 
-int state = 0;       // state of keypress master state = 1 means read keypres
 int h = 0;  // hours
 int m = 0;  // minutes
 int s = 0;  // seconds
+
 //-----------print functions ------------------/
 void PrintBegin()
 {
@@ -132,8 +115,8 @@ void printTempHumidityMenu()
   lcd.setCursor(15,0);
   lcd.print("%");
   }
-//  setup serial printer for use
-void SPrintBegin()
+
+void SPrintBegin() //  setup serial printer for use
   {
   Serial.begin(9600);
   Serial.println("Ready"); 
@@ -204,8 +187,8 @@ void getDate(byte *second,
   *month      = bcdToDec(Wire.read());
   *year       = bcdToDec(Wire.read());
 }
+
 /****** LED Functions ******/
-/***************************/
 //function to set LED brightness according to time of day
 //function has three equal phases - ramp up, hold, and ramp down
 
@@ -247,46 +230,6 @@ int   setLed(int mins,         // current time in minutes
   return val;
 }
 
-// format a number of minutes into a readable time (24 hr format)
-/*void printMins(int mins,       //time in minutes to print
-               boolean ampm    //print am/pm?
-              )  {
-  int hr = (mins%1440)/60;
-  int mn = mins%60;
-    if(hr<10){
-      lcd.print(" ");
-    }
-    lcd.print(hr);
-    lcd.print(":");
-    if(mn<10){
-      lcd.print("0");
-    }
-    lcd.print(mn); 
-}
-
-// format hours, mins, secs into a readable time (24 hr format)
-void printHMS (byte hr,
-               byte mn,
-               byte sec      //time to print
-              )  
-{
-  
-    if(hr<10){
-      lcd.print(" ");
-    }
-    lcd.print(hr, DEC);
-    lcd.print(":");
-    if(mn<10){
-      lcd.print("0");
-    }
-    lcd.print(mn, DEC);
-    //lcd.print(":");
-    //if(sec<10){
-      //lcd.print("0");
-    //}
-    //lcd.print(sec, DEC);
-}*/
-
 void ovrSetAll(int pct){
     analogWrite(oneLed,map(pct,0,100,0,255));
     analogWrite(twoLed,map(pct,0,100,0,255));
@@ -294,26 +237,13 @@ void ovrSetAll(int pct){
     analogWrite(fourLed,map(pct,0,100,0,255));
 }
 
-// setup ddrc and portc for temp/humidity sensor
-// DHT11_GetData Use with Mega 2560 simple and direct
-/*
-void GetDHT11Data()
-{
-int chk = DHT.read(DHT11_PIN);    // READ DATA
-  DHT11Temp = (int) round(DHT.temperature);
-  dhtHumidity = DHT.humidity;
-  dhtFTemp =  (int)round((1.8*DHT11Temp)+32);
-}
-// use for Uno compile does not work with Mega 2560
-*/
 void DHTSetup(){
    DDRC |= _BV(DHT11_PIN);
   PORTC |= _BV(DHT11_PIN);
   }
-// read dht11 data line for input get current temperature and humidity
-byte read_dht11_dat()
+
+byte read_dht11_dat() // read dht11 data line for input get current temperature and humidity
 {
-  
   byte i = 0;
   byte result=0;
   for(i=0; i< 8; i++)
@@ -327,10 +257,7 @@ byte read_dht11_dat()
     return result;
 }
 
-// read data for input from dht11 temp/humidity sensor 
-// use for Uno compile does not work with mega 2560
-
-void GetDHTData()
+void GetDHTData() // read data for input from dht11 temp/humidity sensor 
   {
   byte dht11_dat[5];
   byte dht11_in;
@@ -384,19 +311,11 @@ void setup()
 {
 Wire.begin();
 //DHTSetup();
-
-// setup lcd screen object
-PrintBegin();
-// set serial printer
-SPrintBegin();
-//splash screen
-lcd.print("GrowControl");
+PrintBegin(); //setup lcd screen object
+SPrintBegin(); //set serial printer
+lcd.print("GrowControl"); //splash screen
 delay(5000);
 lcd.clear();
-//lcd.setBacklight(OFF);
-//analogWrite(bkl,bklIdle);
-btnCurrIteration = btnMaxIteration;
-
 } // end setup
 
 
