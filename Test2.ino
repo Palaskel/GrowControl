@@ -121,18 +121,7 @@ void PrintBegin()
   lcd.setBacklight(ON);
    
 }
-//void printTempMenu()
-//  {
-//  lcd.setCursor(12,0);
-//  lcd.print(dhtCTemp);
-//  lcd.setCursor(15,0);
-//  lcd.print((char)223);
-//  //lcd.setCursor(13,0);
-//  //lcd.print(dhtHumidity);
-//  //lcd.setCursor(15,0);
-//  //lcd.print("%");
-//  }
-  void printTempHumidityMenu()
+void printTempHumidityMenu()
   {
   lcd.setCursor(9,0);
   lcd.print(dhtCTemp);
@@ -158,32 +147,7 @@ void cleanScreen()
   lcd.setCursor(0,1);
   lcd.print("                ");
 }
-// readButtons from lcd shield
-//void ReadButtons()
-//   {
-//    uint8_t buttons = lcd.readButtons();
-//
-//  if (buttons) {
-//    //lcd.clear();
-//    //lcd.setCursor(0,0);
-//    if (buttons & BUTTON_UP) {
-//     
-//    }
-//    if (buttons & BUTTON_DOWN) {
-//    
-//    }
-//    if (buttons & BUTTON_LEFT) {
-//     
-//    }
-//    if (buttons & BUTTON_RIGHT) {
-//     
-//    }
-//    if (buttons & BUTTON_SELECT) {
-//      
-//    }
-//  }
-//}
-// end ReadButtons
+
 /****** RTC Functions ******/
 /***************************/
 
@@ -282,30 +246,9 @@ int   setLed(int mins,         // current time in minutes
   if(override){val=overpercent;}
   return val;
 }
-/**** Display Functions ****/
-/***************************/
-
-//button hold function
-//int btnCurrDelay(byte curr)
-//{
-//  if(curr==btnMaxIteration)
-//  {
-//    btnCurrIteration = btnMaxIteration;
-//    return btnMaxDelay;
-//  }
-//  else if(btnCurrIteration ==0)
-//  {
-//    return btnMinDelay;
-//  }
-//  else
-//  {
-//    btnCurrIteration--;
-//    return btnMaxDelay;
-//  }
-//}
 
 // format a number of minutes into a readable time (24 hr format)
-void printMins(int mins,       //time in minutes to print
+/*void printMins(int mins,       //time in minutes to print
                boolean ampm    //print am/pm?
               )  {
   int hr = (mins%1440)/60;
@@ -342,15 +285,15 @@ void printHMS (byte hr,
       //lcd.print("0");
     //}
     //lcd.print(sec, DEC);
-}
+}*/
+
 void ovrSetAll(int pct){
     analogWrite(oneLed,map(pct,0,100,0,255));
     analogWrite(twoLed,map(pct,0,100,0,255));
     analogWrite(threeLed,map(pct,0,100,0,255));
     analogWrite(fourLed,map(pct,0,100,0,255));
-//   analogWrite(fiveLed,map(pct,0,100,0,255));
-//   analogWrite(sixLed,map(pct,0,100,0,255));
 }
+
 // setup ddrc and portc for temp/humidity sensor
 // DHT11_GetData Use with Mega 2560 simple and direct
 /*
@@ -435,23 +378,6 @@ void GetDHTData()
   //double dhtDHumidity= double dht11_dat[0];
   } // end read data DHT11
 
-// showChannelValues()  print channel values to lcd
-//void showChannelValues() { // display the current intensity for each led channel
-//byte second, minute, hour, dayOfWeek, dayOfMonth, month, year;
-//char buffer[17];
-//lcd.noCursor();
-//lcd.noBlink();
-//getDate(&second, &minute, &hour, &dayOfWeek, &dayOfMonth, &month, &year);
-//lcd.noCursor();
-//lcd.noBlink();
-//lcd.setCursor(0,0);
-//sprintf(buffer, "%3d %3d %3d", oneVal, twoVal, threeVal);
-//lcd.print(buffer);
-//lcd.setCursor(0,1);
-//sprintf(buffer, "%3d %3d %3d%2d:%02d", fourVal, fiveVal, sixVal, hour, minute);
-//lcd.print(buffer);
-//}
-// end showChannelValues
 
 // void setup
 void setup()
@@ -471,8 +397,8 @@ lcd.clear();
 //analogWrite(bkl,bklIdle);
 btnCurrIteration = btnMaxIteration;
 
-
 } // end setup
+
 
 // Main loop
 void loop(){ 
@@ -496,23 +422,14 @@ void loop(){
   if(fourFadeDuration > fourPhotoPeriod/2 && fourPhotoPeriod > 0){fourFadeDuration = fourPhotoPeriod/2;}
   if(fourFadeDuration<1){fourFadeDuration=1;}
  
-  //if(fiveFadeDuration > fivePhotoPeriod/2 && fivePhotoPeriod >0){fiveFadeDuration = fivePhotoPeriod/2;}
-  //if(fiveFadeDuration<1){fiveFadeDuration=1;}
-  
-  //if(sixFadeDuration > sixPhotoPeriod/2 && sixPhotoPeriod > 0){sixFadeDuration = sixPhotoPeriod/2;}
-  //if(sixFadeDuration<1){sixFadeDuration=1;} 
-  
   //check & set any time functions
-  
-  
+   
   //set outputs
   if(!override){
   oneVal = setLed(minCounter, oneLed, oneStartMins, onePhotoPeriod, oneFadeDuration, oneMax, oneInverted);
   twoVal = setLed(minCounter, twoLed, twoStartMins, twoPhotoPeriod, twoFadeDuration, twoMax, twoInverted);
   threeVal = setLed(minCounter, threeLed, threeStartMins, threePhotoPeriod, threeFadeDuration, threeMax, threeInverted);
   fourVal = setLed(minCounter, fourLed, fourStartMins, fourPhotoPeriod, fourFadeDuration, fourMax, fourInverted);
-  //fiveVal = setLed(minCounter, fiveLed, fiveStartMins, fivePhotoPeriod, fiveFadeDuration, fiveMax, fiveInverted);
-  //sixVal = setLed(minCounter, sixLed, sixStartMins, sixPhotoPeriod, sixFadeDuration, sixMax, sixInverted);
   
   }
   else{
