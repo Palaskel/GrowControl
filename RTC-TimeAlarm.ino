@@ -3,6 +3,9 @@
 #include <Wire.h>
 #include <DS1307RTC.h>  // a basic DS1307 library that returns time as a time_t
 
+int oneRelay = 6;
+int twoRelay = 7;
+
 void setup()  {
   Serial.begin(9600);
   while (!Serial) ;           // wait until Arduino Serial Monitor opens
@@ -12,8 +15,10 @@ void setup()  {
   else
      Serial.println("RTC has set the system time");      
   // create the alarms, to trigger at specific times
-  Alarm.alarmRepeat(8,30,0, MorningAlarm);  // 8:30am every day
-  Alarm.alarmRepeat(17,45,0,EveningAlarm); // 5:45pm every day
+  Alarm.alarmRepeat(9,00,0, oneRelayON);  // 8:30am every day
+  Alarm.alarmRepeat(21,00,0, oneRelayOFF); // 5:45pm every day
+  Alarm.alarmRepeat(6,00,0, twoRelayON);
+  Alarm.alarmRepeat(0,00,0, twoRelayOFF);
 }
 
 void loop()
@@ -30,14 +35,24 @@ void loop()
 }
 
 // functions to be called when an alarm triggers:
-void MorningAlarm() {
+void oneRelayON() {
   Serial.println("Alarm: - turn lights on");
   digitalWrite(oneRelay, HIGH);
 }
 
-void EveningAlarm() {
+void oneRelayOFF() {
   Serial.println("Alarm: - turn lights off);
   digitalWrite(oneRelay, LOW);
+}
+
+void twoRelayON() {
+  Serial.println("Alarm: - turn lights on");
+  digitalWrite(twoRelay, HIGH);
+}
+                 
+void twoRelayOFF() {
+  Serial.println("Alarm: - turn lights off");
+  digitalWrite(twoRelay, LOW);
 }
 
 void digitalClockDisplay() {
