@@ -7,7 +7,7 @@
 #include <dht11.h>  
 
 // setup DHT for use
-//dht11 DHT;
+dht11 DHT;
 
 // DHT data  pin
 #define DHT11_PIN 0 // ADC0 for Uno
@@ -225,6 +225,9 @@ void ovrSetAll(int pct){
 //   analogWrite(fiveDimm,map(pct,0,100,0,255));
 //   analogWrite(sixDimm,map(pct,0,100,0,255));
 }
+
+
+//******DHT*******//
 
 // use for Uno compile does not work with Mega 2560
 void DHTSetup(){
