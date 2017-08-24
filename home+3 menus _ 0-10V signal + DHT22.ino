@@ -153,6 +153,39 @@ void printMinSpeed() {
   lcd.print("%");
 }
 
+void Sensor() {
+  delay(2000);
+
+  // Reading temperature or humidity takes about 250 milliseconds!
+  // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
+  float hflo = dhtflo.readHumidity();
+  float hveg = dhtveg.readHumidity();
+  // Read temperature as Celsius (the default)
+  float tflo = dhtflo.readTemperature();
+  float tveg = dhtveg.readTemperature();
+  // Check if any reads failed and exit early (to try again).
+  if (isnan(hflo) || isnan(tflo)) {
+    Serial.println("Failed to read from DHTflo sensor!");
+    return;
+  }
+  if (isnan(hveg) || isnan(tveg)) {
+    Serial.println("Failed to read from DHTveg sensor!");
+    return;
+  }
+  
+  Serial.print("Humidity: ");
+  Serial.print(hflo);
+  Serial.print(" %\t");
+  Serial.print("Temperature: ");
+  Serial.print(tflo);
+  Serial.print(" *C ");
+  Serial.print("Humidity: ");
+  Serial.print(hveg);
+  Serial.print(" %\t");
+  Serial.print("Temperature: ");
+  Serial.print(tveg);
+  Serial.print(" *C ");
+}
 //=================================================================
 //                  SETUP
 //=================================================================
@@ -172,6 +205,8 @@ void setup() {
   lcd.print(" ClimateControl");
   delay(1500);
   lcd.clear();
+  dhtflo.begin();
+  dhtveg.begin
 }
 
 //=================================================================
@@ -205,6 +240,7 @@ void loop() {
   
   if(menuCount == 1) {
     getData();
+    Sensor(); //DHT22 void
     printHome();
   }
   
