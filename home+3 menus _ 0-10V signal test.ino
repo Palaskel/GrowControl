@@ -19,6 +19,7 @@ int IncPerc = 5; //Increment by X%
 int MaxSpeedPerc = 25;
 int MinSpeedPerc = 05;
 int SpeedVal = 0;
+int HysteresisPerc = 0;
 
 // create the menu counter
 int menuCount   = 1;
@@ -201,15 +202,28 @@ void loop() {
     printMinSpeed();
   }
   
+  HysteresisPerc = (MaxSpeedPerc-MinSpeedPerc)/5;
   if (FloTemp <= setTempVal) {
     SpeedVal = map(MinSpeedPerc, 0, 100, 0, 255);
     analogWrite(SpeedPin, SpeedVal);
   }
   else if (FloTemp > setTempVal && FloTemp <= setTempVal+1) {
-    SpeedVal = map(((MaxSpeedPerc-MinSpeedPerc)/4)+MinSpeedPerc, 0, 100, 0, 255);
+    SpeedVal = map(HysteresisPerc+MinSpeedPerc, 0, 100, 0, 255);
     analogWrite(SpeedPin, SpeedVal);
   }
   else if (FloTemp > setTempVal+1 && FloTemp <= setTempVal+2) {
+    SpeedVal = map((HysteresisPerc*2)+MinSpeedPerc, 0, 100, 0, 255);
+    analogWrite(SpeedPin, SpeedVal);
+  }
+  else if (FloTemp > setTempVal+2 && FloTemp <= setTempVal+3) {
+    SpeedVal = map((HysteresisPerc*3)+MinSpeedPerc, 0, 100, 0, 255);
+    analogWrite(SpeedPin, SpeedVal);
+  }
+  else if (FloTemp > setTempVal+3 && FloTemp <= setTempVal+4) {
+    SpeedVal = map((HysteresisPerc*4)+MinSpeedPerc, 0, 100, 0, 255);
+    analogWrite(SpeedPin, SpeedVal);
+  }
+  else if (FloTemp > setTempVal+4) {
     SpeedVal = map(MaxSpeedPerc, 0, 100, 0, 255);
     analogWrite(SpeedPin, SpeedVal);
   }
