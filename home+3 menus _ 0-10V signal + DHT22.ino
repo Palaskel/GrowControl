@@ -46,18 +46,6 @@ int HysteresisPerc = 0;
 int menuCount   = 1;
 int menuCountMax = 4;
 
-void getData() {
-  int FloReading = analogRead(FloSensor);  
-  float FloVoltage = FloReading * 5.0;
-  FloVoltage /= 1024.0; 
-  FloTemp =(int) round((FloVoltage - 0.5) * 100);
-  int VegReading = analogRead(VegSensor);  
-  float VegVoltage = VegReading * 5.0;
-  VegVoltage /= 1024.0; 
-  VegTemp =(int) round((VegVoltage - 0.5) * 100); 
-  
-}
-
 void setTemp() {
   if (digitalRead(less_key) == LOW)
   {
@@ -155,7 +143,6 @@ void printMinSpeed() {
 
 void Sensor() {
   delay(2000);
-
   // Reading temperature or humidity takes about 250 milliseconds!
   // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
   float hflo = dhtflo.readHumidity();
@@ -239,7 +226,6 @@ void loop() {
   }
   
   if(menuCount == 1) {
-    getData();
     Sensor(); //DHT22 void
     printHome();
   }
@@ -260,27 +246,27 @@ void loop() {
   }
   
   HysteresisPerc = (MaxSpeedPerc-MinSpeedPerc)/5;
-  if (FloTemp <= setTempVal) {
+  if (tflo <= setTempVal) {
     SpeedVal = map(MinSpeedPerc, 0, 100, 0, 255);
     analogWrite(SpeedPin, SpeedVal);
   }
-  else if (FloTemp > setTempVal && FloTemp <= setTempVal+1) {
+  else if (tflo > setTempVal && tflo <= setTempVal+1) {
     SpeedVal = map(HysteresisPerc+MinSpeedPerc, 0, 100, 0, 255);
     analogWrite(SpeedPin, SpeedVal);
   }
-  else if (FloTemp > setTempVal+1 && FloTemp <= setTempVal+2) {
+  else if (tflo > setTempVal+1 && tflo <= setTempVal+2) {
     SpeedVal = map((HysteresisPerc*2)+MinSpeedPerc, 0, 100, 0, 255);
     analogWrite(SpeedPin, SpeedVal);
   }
-  else if (FloTemp > setTempVal+2 && FloTemp <= setTempVal+3) {
+  else if (tflo > setTempVal+2 && tflo <= setTempVal+3) {
     SpeedVal = map((HysteresisPerc*3)+MinSpeedPerc, 0, 100, 0, 255);
     analogWrite(SpeedPin, SpeedVal);
   }
-  else if (FloTemp > setTempVal+3 && FloTemp <= setTempVal+4) {
+  else if (tflo > setTempVal+3 && tflo <= setTempVal+4) {
     SpeedVal = map((HysteresisPerc*4)+MinSpeedPerc, 0, 100, 0, 255);
     analogWrite(SpeedPin, SpeedVal);
   }
-  else if (FloTemp > setTempVal+4) {
+  else if (tflo > setTempVal+4) {
     SpeedVal = map(MaxSpeedPerc, 0, 100, 0, 255);
     analogWrite(SpeedPin, SpeedVal);
   }
