@@ -1,4 +1,25 @@
 #include <LiquidCrystal.h>
+#include "DHT.h"
+
+#define DHTPINflo 14     // what digital pin we're connected to
+#define DHTPINveg 15
+
+#define DHTTYPEflo DHT22   // DHT 22  (AM2302), AM2321
+#define DHTTYPEveg DHT22
+
+// Connect pin 1 (on the left) of the sensor to +5V
+// NOTE: If using a board with 3.3V logic like an Arduino Due connect pin 1
+// to 3.3V instead of 5V!
+// Connect pin 2 of the sensor to whatever your DHTPIN is
+// Connect pin 4 (on the right) of the sensor to GROUND
+// Connect a 10K resistor from pin 2 (data) to pin 1 (power) of the sensor
+
+// Initialize DHT sensor.
+// Note that older versions of this library took an optional third parameter to
+// tweak the timings for faster processors.  This parameter is no longer needed
+// as the current DHT reading algorithm adjusts itself to work on faster procs.
+DHT dhtflo(DHTPINflo, DHTTYPEflo);
+DHT dhtveg(DHTPINveg, DHTTYPEveg);
 
 LiquidCrystal lcd(2, 3, 4, 5, 6, 7);
 
